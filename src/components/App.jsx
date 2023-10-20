@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable array-callback-return */
 import { useState, useEffect, React } from "react"
 import { Searchbar } from './Elements/Searchbar'
@@ -26,27 +27,24 @@ export const App = () => {
   const addMore = () => {
     setPage(loadPage + 1)
   }
-
-  const renderImg = () => {
-    const key = "39209213-26e6de3edfb0581cbb486c9d2"
-    const responce = axios.get(`https://pixabay.com/api/?q=${search}&page=${loadPage}&key=${key}&image_type=photo&orientation=horizontal&per_page=12`)
-    return(responce)
-  }
   
   useEffect(() => {
     if(search!=='') {
+      const key = "39209213-26e6de3edfb0581cbb486c9d2"
       setLoading(true)
-      renderImg().then(resp => {
-        const pics = Object.assign([], picsToRender)
-        resp.data.hits.map(function (item) {
-          const { id, tags, webformatURL, largeImageURL } = item
-          pics.push({ id: id, tags: tags, webformatURL: webformatURL, largeImageURL: largeImageURL })
+      axios.get(`https://pixabay.com/api/?q=${search}&page=${loadPage}&key=${key}&image_type=photo&orientation=horizontal&per_page=12`)
+        .then(resp => {
+          const pics = Object.assign([], picsToRender)
+          resp.data.hits.map(function (item) {
+            const { id, tags, webformatURL, largeImageURL } = item
+            pics.push({ id: id, tags: tags, webformatURL: webformatURL, largeImageURL: largeImageURL })
+          })
+          setPicsToRender(pics)
+          setLoading(false)
         })
-        setPicsToRender(pics)
-        setLoading(false)
-      }).catch(error => {
-        console.log(error)
-      })
+        .catch(error => {
+          console.log(error)
+        })
     }
   }, [search, loadPage])
 
